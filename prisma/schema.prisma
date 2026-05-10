@@ -1,0 +1,252 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- Multi-tenancy ---
+model Tenant {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  logo        String?
+  address     String?
+  phone       String?
+  email       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users       User[]
+  programs    Program[]
+  academicCycles AcademicCycle[]
+}
+
+// --- Auth (Compatible with Better Auth) ---
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  role          Role      @default(STUDENT)
+  tenantId      String
+  tenant        Tenant    @relation(fields: [tenantId], references: [id])
+
+  sessions      Session[]
+  accounts      Account[]
+  
+  // Profiles
+  studentProfile StudentProfile?
+  teacherProfile TeacherProfile?
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  TEACHER
+  STUDENT
+  PARENT
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  idToken               String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// --- Academic Management ---
+
+model AcademicCycle {
+  id        String   @id @default(cuid())
+  name      String   // e.g., "2024-I", "Primer Semestre 2024"
+  startDate DateTime
+  endDate   DateTime
+  isActive  Boolean  @default(true)
+  
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  
+  sections  Section[]
+}
+
+model Program {
+  id          String   @id @default(cuid())
+  name        String   // e.g., "Ingeniería de Sistemas", "Primaria"
+  description String?
+  
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  
+  subjects    Subject[]
+  enrollments Enrollment[]
+}
+
+model Subject {
+  id        String   @id @default(cuid())
+  name      String
+  code      String?
+  credits   Int?
+  
+  programId String
+  program   Program  @relation(fields: [programId], references: [id])
+  
+  sections  Section[]
+}
+
+model Section {
+  id              String   @id @default(cuid())
+  name            String   // e.g., "Grupo A", "Mañana"
+  schedule        String?  // JSON or string representation
+  
+  subjectId       String
+  subject         Subject  @relation(fields: [subjectId], references: [id])
+  
+  academicCycleId String
+  academicCycle   AcademicCycle @relation(fields: [academicCycleId], references: [id])
+  
+  teacherId       String?
+  teacher         TeacherProfile? @relation(fields: [teacherId], references: [id])
+  
+  enrollments     EnrollmentInSection[]
+  grades          Grade[]
+  attendance      Attendance[]
+}
+
+model StudentProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  
+  studentCode String? @unique
+  birthDate   DateTime?
+  
+  enrollments Enrollment[]
+}
+
+model TeacherProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  
+  specialization String?
+  
+  sections  Section[]
+}
+
+model Enrollment {
+  id               String   @id @default(cuid())
+  studentProfileId String
+  studentProfile   StudentProfile @relation(fields: [studentProfileId], references: [id])
+  
+  programId        String
+  program          Program @relation(fields: [programId], references: [id])
+  
+  status           EnrollmentStatus @default(ACTIVE)
+  createdAt        DateTime @default(now())
+  
+  sections         EnrollmentInSection[]
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  INACTIVE
+  GRADUATED
+  DROPPED
+}
+
+model EnrollmentInSection {
+  id           String   @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
+  
+  sectionId    String
+  section      Section @relation(fields: [sectionId], references: [id])
+  
+  createdAt    DateTime @default(now())
+  
+  @@unique([enrollmentId, sectionId])
+}
+
+model Grade {
+  id        String   @id @default(cuid())
+  value     Float
+  weight    Float?   @default(1.0)
+  comment   String?
+  
+  sectionId String
+  section   Section @relation(fields: [sectionId], references: [id])
+  
+  enrollmentId String
+  // Relation to student via enrollment
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Attendance {
+  id        String   @id @default(cuid())
+  date      DateTime
+  status    AttendanceStatus
+  
+  sectionId String
+  section   Section @relation(fields: [sectionId], references: [id])
+  
+  enrollmentId String
+  
+  createdAt DateTime @default(now())
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  JUSTIFIED
+}
+
+// --- Financial Management ---
+
+model Invoice {
+  id        String   @id @default(cuid())
+  amount    Float
+  dueDate   DateTime
+  status    InvoiceStatus @default(PENDING)
+  
+  userId    String // Who needs to pay
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
