@@ -10,7 +10,8 @@ import {
   Mail,
   Phone,
   MapPin,
-  Calendar
+  Calendar,
+  GraduationCap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 

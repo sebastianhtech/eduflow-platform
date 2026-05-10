@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   ChevronRight,
-  LogOut
+  LogOut,
+  BarChart3
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,8 +24,8 @@ const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: GraduationCap, label: "Académico", href: "/academico" },
   { icon: Users, label: "Estudiantes", href: "/estudiantes" },
-  { icon: Calendar, label: "Horarios", href: "/horarios" },
   { icon: Wallet, label: "Tesorería", href: "/tesoreria" },
+  { icon: BarChart3, label: "Reportes", href: "/reportes" },
   { icon: Settings, label: "Configuración", href: "/configuracion" },
 ];
 

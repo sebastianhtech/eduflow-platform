@@ -10,7 +10,8 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   DollarSign,
-  PieChart
+  PieChart,
+  Clock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
