@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🦅 EduFlow - Premium Educational SaaS
 
-## Getting Started
+EduFlow es una plataforma de gestión académica y administrativa de alto rendimiento, diseñada para instituciones educativas modernas. Inspirada en la robustez de Q10 pero elevada con una estética **"Flat Premium"** y un stack tecnológico de vanguardia.
 
-First, run the development server:
+![EduFlow Dashboard](./screenshots/dashboard.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Características Principales
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+*   **Arquitectura Multi-tenant**: Diseñado para escalar a múltiples instituciones con aislamiento de datos total.
+*   **Gestión Académica Integral**: Control total sobre programas, cursos, secciones y calendarios.
+*   **Finanzas y Tesorería**: Automatización de facturación, recaudación y estados de cuenta en tiempo real.
+*   **Experiencia de Usuario (UX)**: Interfaz fluida basada en Next.js 15, Tailwind CSS v4 y Framer Motion.
+*   **Seguridad**: Autenticación robusta con Better Auth y Prisma para una integridad de datos superior.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*   **Frontend**: Next.js 15 (App Router), React 19, Tailwind CSS v4.
+*   **Backend**: Prisma ORM, Better Auth.
+*   **Diseño**: Framer Motion, GSAP, Lucide Icons.
+*   **Infraestructura**: Monorepo compatible, listo para despliegue en Vercel/Railway.
 
-## Learn More
+## 📦 Instalación y Desarrollo
 
-To learn more about Next.js, take a look at the following resources:
+1.  Clonar el repositorio.
+2.  Instalar dependencias: `pnpm install`.
+3.  Configurar variables de entorno en `.env`.
+4.  Ejecutar el servidor de desarrollo: `pnpm dev`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🌐 Despliegue en Vivo
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Puedes visualizar la aplicación funcionando en el siguiente enlace:
+[**EduFlow Live Demo**](https://eduflow-platform.vercel.app)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Desarrollado con ❤️ por Sebastian H. y Antigravity AI.*
